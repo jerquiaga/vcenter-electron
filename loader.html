@@ -1,0 +1,101 @@
+<html>
+<head>
+    <link href="./default.css" rel="stylesheet" />
+    <script>
+        const settings = require('electron-settings')
+        const {ipcRenderer} = require('electron')
+        const remote = require('electron').remote
+
+        let fullURL
+        let badgeHTML
+        let settingDisplayHTML
+        let serviceDownHTML
+
+        // Inital page variables
+        if (settings.get('server.type') === 'view') {
+            fullURL = "https:\/\/" + settings.get('server.URL') + "/admin/"
+            badgeHTML = "<img src=\"./assets/icons/flash/Flash_Badge_12.png\">"
+        } else if (settings.get('server.type') === 'appv') {
+            fullURL = "https:\/\/" + settings.get('server.URL') + "/login/"
+            badgeHTML = "<img src=\"./assets/icons/html5/HTML5_Badge_12.png\">"
+        } else if (settings.get('format.preference') === 'html5') {
+            fullURL = "https:\/\/" + settings.get('server.URL') + settings.get('extensions.html5')
+            badgeHTML = "<img src=\"./assets/icons/html5/HTML5_Badge_12.png\">"
+        } else if (settings.get('format.preference') === 'flash') {
+            fullURL = "https:\/\/" + settings.get('server.URL') + settings.get('extensions.flash')
+            badgeHTML = "<img src=\"./assets/icons/flash/Flash_Badge_12.png\">"
+        } else {
+            fullURL = "https:\/\/" + settings.get('server.URL')
+            badgeHTML = ""
+        }
+
+        serviceDownHTML = "<td><font color=\"red\">VMWare Cip Message Proxy Service is Stopped. <button class=\"button\" onclick=\"startCIPMessageProxy()\">Start Service</button></font></td>"
+
+        // Allows Main process functions to update status bar
+        ipcRenderer.on('updateinfo', (event, message) => {
+            console.log(message)
+            updateSettingDisplayHTML()
+        })
+
+        // Update status bar
+        function updateSettingDisplayHTML() {
+            settingDisplayHTML = "<table class=\"status\"><tr>"
+            if (serviceStatus() == false) { settingDisplayHTML = settingDisplayHTML + serviceDownHTML }
+            settingDisplayHTML = settingDisplayHTML + "<td width=\"100%\"></td><td>Currently connected to: " + settings.get('server.URL') + "</td><td></td><td>" + badgeHTML + "</td></tr></table>"
+            document.getElementById("settingdisplay").innerHTML = settingDisplayHTML
+        }
+
+        // Check whether CIP Message Proxy service is running
+        function serviceStatus() {
+            var child = require('child_process')
+            try {
+                var cmdOutput = child.execSync('sc query CipMsgProxyService | findstr STATE')
+                if (cmdOutput.includes("STOPPED")) {
+                    return false
+                } else { return true }
+            }
+            catch(err) { return true }
+        }
+
+        // Send a request to Main process to start CIP Message Proxy service
+        function startCIPMessageProxy() {
+            ipcRenderer.send('start-service')
+            while (serviceStatus() == false) {
+                setTimeout(serviceStatus,1000)
+            }
+        }
+
+        // Load the page
+        function loadPage() {
+
+            // Show progress bar while loading
+            const loadstart = () =>  {
+                indicator.style.display = 'inline'
+            }
+
+            // Hide progress bar when loading complete
+            const loadstop = () => {
+                indicator.style.display = 'none'
+            }
+
+            document.getElementById("webview").innerHTML = "<webview id=\"host\" src=\"" + fullURL + "\" autosize plugins></webview>"
+            updateSettingDisplayHTML()
+            
+            var webview = document.getElementById('host')
+            var indicator = document.getElementById('indicator')
+            
+            webview.addEventListener('did-start-loading', loadstart)
+            webview.addEventListener('did-stop-loading', loadstop)
+        }
+
+        window.onload = loadPage
+    </script>
+</head>
+
+<body>
+    <div id="indicator" class="loaderframe"><img src="./assets/images/Marge-anim-progressbar.gif"></img></div>
+    <div id="webview"></div>
+    <div id="settingdisplay" class="settingdisplay" align="right"></div>
+</body>
+
+</html>

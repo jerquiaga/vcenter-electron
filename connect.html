@@ -1,0 +1,57 @@
+<html>
+<head>
+    <link href="./default.css" rel="stylesheet" />
+    <script>
+        const {ipcRenderer} = require('electron')
+        
+        function submit(){
+            var updatedURL = document.getElementById("connectURL").value.toString()
+            var updatedPref = document.getElementById("interfaceType").value.toString()
+            var updatedServerType = document.getElementById("hostType").value.toString()
+
+            ipcRenderer.send('server-update', updatedURL, updatedPref, updatedServerType)
+        }
+
+        function checkType(){
+            var selectedType = document.getElementById("hostType").value.toString()
+            
+            if (selectedType === 'esxi') { document.getElementById("interfaceType").disabled = true }
+            else if (selectedType === 'vcenter') { document.getElementById("interfaceType").disabled = false }
+        }
+    </script>
+</head>
+<body>
+
+<div id="selection" class="selection"><b>Enter the FQDN or IP of the server:</b>
+    <p>
+    <table class="connect">
+        <tr>
+            <td class="padded">https://</td>
+            <td colspan="3"><input type="text" id="connectURL" class="fill"></td>
+        <tr>
+        <tr>
+            <td class="padded">Type</td>
+            <td>
+                <select id="hostType" name="hostType" onchange="checkType()" class="fill">
+                    <option value="vcenter">vCenter</option>
+                    <option value="esxi">ESXi Host</option>
+                </select>
+            </td>
+            <td class="padded">Interface</td>
+            <td>
+                <select id="interfaceType" name="interfaceType" class="fill">
+                    <option value="html5">HTML5</option>>
+                    <option value="flash">Flash</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td align="right" colspan="4" style="padding-top:20px"><button onclick="submit()">Connect</button></td>
+        </tr>
+    </table>
+    </p>
+</div>
+
+<div id="temp"></div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+webview {
+    width:100%;
+    height:calc(100% - 26px);
+}
+body {
+    margin: 0;
+    padding: 0;
+    background: #313131;
+
+    background-repeat:no-repeat;
+    margin: 0;
+    font-size:12px;
+    font-family:Arial, Helvetica, sans-serif;
+    color: white;
+}
+div.settingdisplay {
+    margin-right: 1em;
+    border-top: 3px;
+    border-style: solid;
+    border-color: #313131;
+    vertical-align: middle;
+}
+div.selection {
+    width: 400px;
+    height: 100px;
+
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    margin: auto;
+
+    font-size: 16px;
+}
+div.loaderframe {
+    width: 304px;
+    height: 10px;
+
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+
+    margin: auto;
+}
+img {
+    display: inline-block;
+    margin: auto;
+    height: auto;
+}
+table.status {
+    font-size: 12px;
+    border-collapse: collapse;
+    border-style: none;
+    border-spacing: 0px;
+    white-space: nowrap;
+    height: 10px;
+}
+table.connect {
+    border-collapse: collapse;
+    border-style: none;
+    width: 100%;
+    white-space: nowrap;
+}
+td.padded {
+    padding-right: 4px;
+    text-align: right;
+}
+.fill {
+    display: table-cell;
+    width: 100%;
+}
+button {
+    font-size: 10px;
+}

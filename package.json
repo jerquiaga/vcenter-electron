@@ -1,0 +1,45 @@
+{
+  "name": "vcenter-electron",
+  "productName": "VMware vCenter Client",
+  "version": "2.5.0",
+  "private": true,
+  "description": "VMware vCenter Client - Electron wrapper for vCenter websites.",
+  "main": "main.js",
+  "keywords": [
+    "VMware",
+    "VCenter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jerquiaga/vcenter-electron.git"
+  },
+  "author": "Josh Erquiaga",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^4.0.8",
+    "electron-builder": "^20.38.5"
+  },
+  "dependencies": {
+    "ajv": "^6.10.0",
+    "electron-settings": "^3.2.0",
+    "electron-window-state": "^5.0.3",
+    "sudo-prompt": "^8.2.5"
+  },
+  "scripts": {
+    "start": "electron .",
+    "pack": "node_modules/.bin/electron-builder --dir",
+    "build": "node_modules/.bin/electron-builder --win"
+  },
+  "build": {
+    "appId": "com.custom.vcenter",
+    "extraResources": {
+      "from": "resources/plugin/pepflashplayer.dll",
+      "to": "plugin/pepflashplayer.dll"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icons/win/vcenter.ico",
+      "verifyUpdateCodeSignature": false
+    }
+  }
+}
