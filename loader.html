@@ -10,6 +10,8 @@
         let badgeHTML
         let settingDisplayHTML
         let serviceDownHTML
+        let updateAvailableHTML
+        let updateAvailable = false
 
         // Inital page variables
         if (settings.get('server.type') === 'view') {
@@ -30,10 +32,12 @@
         }
 
         serviceDownHTML = "<td><font color=\"red\">VMWare Cip Message Proxy Service is Stopped. <button class=\"button\" onclick=\"startCIPMessageProxy()\">Start Service</button></font></td>"
+        updateAvailableHTML = "<td><font color=\"yellow\">Update available. <button class=\"button\" onclick=\"startUpdate()\">Install Update</button></font></td>"
 
         // Allows Main process functions to update status bar
         ipcRenderer.on('updateinfo', (event, message) => {
             console.log(message)
+            if (message === "Update available") { updateAvailable = true }
             updateSettingDisplayHTML()
         })
 
@@ -41,6 +45,7 @@
         function updateSettingDisplayHTML() {
             settingDisplayHTML = "<table class=\"status\"><tr>"
             if (serviceStatus() == false) { settingDisplayHTML = settingDisplayHTML + serviceDownHTML }
+            if (updateAvailable) { settingDisplayHTML = settingDisplayHTML + updateAvailableHTML }
             settingDisplayHTML = settingDisplayHTML + "<td width=\"100%\"></td><td>Currently connected to: " + settings.get('server.URL') + "</td><td></td><td>" + badgeHTML + "</td></tr></table>"
             document.getElementById("settingdisplay").innerHTML = settingDisplayHTML
         }
@@ -65,27 +70,21 @@
             }
         }
 
+        // Send a request to Main process to start update
+        function startUpdate() {
+            ipcRenderer.send('start-update')
+        }
+
         // Load the page
         function loadPage() {
-
-            // Show progress bar while loading
-            const loadstart = () =>  {
-                indicator.style.display = 'inline'
-            }
-
-            // Hide progress bar when loading complete
-            const loadstop = () => {
-                indicator.style.display = 'none'
-            }
+            // Send request to Main process to check whether updates are available
+            ipcRenderer.send('check-update-status')
 
             document.getElementById("webview").innerHTML = "<webview id=\"host\" src=\"" + fullURL + "\" autosize plugins></webview>"
             updateSettingDisplayHTML()
             
             var webview = document.getElementById('host')
             var indicator = document.getElementById('indicator')
-            
-            webview.addEventListener('did-start-loading', loadstart)
-            webview.addEventListener('did-stop-loading', loadstop)
         }
 
         window.onload = loadPage
@@ -93,7 +92,6 @@
 </head>
 
 <body>
-    <div id="indicator" class="loaderframe"><img src="./assets/images/Marge-anim-progressbar.gif"></img></div>
     <div id="webview"></div>
     <div id="settingdisplay" class="settingdisplay" align="right"></div>
 </body>
