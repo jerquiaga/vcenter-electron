@@ -71,6 +71,8 @@ function createWindow () {
                     webPreferences: {
                       plugins: true,
                       nodeIntegration: true,
+                      webviewTag: true,
+                      enableRemoteModule: true,
                     }, 
                     'x': mainWindowState.x,
                     'y': mainWindowState.y,

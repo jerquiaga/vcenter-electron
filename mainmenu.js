@@ -237,7 +237,7 @@ const template = [
       {
         label: 'About...',
         click () {
-          var aboutMessage = "Created by Josh Erquiaga as a standalone client to fill the gap left behind by VMware when they discontinued the thick client.\n\n"
+          var aboutMessage = "Standalone Electron client for VMware vSphere, with custom menus allowing quick access to vCenters, ESXi hosts, and AppV servers.\n\n"
           aboutMessage += "vCenter Client Version: " + electron.app.getVersion() + "\n"
           aboutMessage += "Node Version: " + process.versions.node + "\n"
           aboutMessage += "Chrome Version: " + process.versions.chrome + "\n"
@@ -254,14 +254,18 @@ const menu = Menu.buildFromTemplate(template)
 
 // Used in initial menu build to hide the switch option that is in use.
 if (settings.get('format.preference') === 'html5') {
-    menu.items[0].submenu.items[0].visible = false
+  menu.items[0].submenu.items[0].visible = false
+  if (settings.get('server.type') === 'vcenter' || settings.get('server.type') === 'appv') {
+    menu.items[0].submenu.items[1].enabled = false
+  }
 } else if (settings.get('format.preference') === 'flash') {
-    menu.items[0].submenu.items[1].visible = false
+  menu.items[0].submenu.items[1].visible = false
+  if (settings.get('server.type') === 'view') { menu.items[0].submenu.items[0].enabled = false }
 }
 
 // Set vCenter options
 function vcenterMode() {
-    menu.items[0].submenu.items[1].enabled = true
+  menu.items[0].submenu.items[1].enabled = true
 }
 
 // Turns off switch to Flash for hosts
