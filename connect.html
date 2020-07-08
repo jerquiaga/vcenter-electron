@@ -15,9 +15,24 @@
         function checkType(){
             var selectedType = document.getElementById("hostType").value.toString()
             
-            if (selectedType === 'esxi') { document.getElementById("interfaceType").disabled = true }
-            else if (selectedType === 'vcenter') { document.getElementById("interfaceType").disabled = false }
+            if (selectedType === 'legacyvcenter') {
+                document.getElementById("interfaceType").disabled = false
+            }
+            else {
+                document.getElementById("interfaceType").value = "html5"
+                document.getElementById("interfaceType").disabled = true
+            }
         }
+
+        // Load the page
+        function loadPage() {
+            // Set default selections
+            document.getElementById("hostType").value = "vcenter"
+            document.getElementById("interfaceType").value = "html5"
+            document.getElementById("interfaceType").disabled = true
+        }
+
+        window.onload = loadPage
     </script>
 </head>
 <body>
@@ -34,6 +49,7 @@
             <td>
                 <select id="hostType" name="hostType" onchange="checkType()" class="fill">
                     <option value="vcenter">vCenter</option>
+                    <option value="legacyvcenter">vCenter (&lt7.0)</option>
                     <option value="esxi">ESXi Host</option>
                 </select>
             </td>

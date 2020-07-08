@@ -129,7 +129,7 @@ ipcMain.on('server-update', (event, arg1, arg2, arg3) => {
   settings.set('format', { preference: arg2 })
 
   mainMenu.changeMenu(arg2)
-  if (arg3 === 'esxi') { mainMenu.setHostMode(arg3) }
+  if (arg3 === 'esxi' || arg3 === 'vcenter') { mainMenu.setHostMode(arg3) }
 })
 
 // Allow start service messages from loader.html renderer process.
