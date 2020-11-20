@@ -5,6 +5,7 @@
         const settings = require('electron-settings')
         const {ipcRenderer} = require('electron')
         const remote = require('electron').remote
+        const shell = require('electron').shell
 
         let fullURL
         let badgeHTML
@@ -85,6 +86,10 @@
             
             var webview = document.getElementById('host')
             var indicator = document.getElementById('indicator')
+
+            webview.addEventListener('new-window', (event) => {
+                shell.openExternal(event.url)
+            })
         }
 
         window.onload = loadPage
