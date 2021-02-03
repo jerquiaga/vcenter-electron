@@ -28,4 +28,4 @@ Code contributions are welcome! If there is something you see that can be fixed/
 
 ## License
 
-This project is license under the [MIT](LICENSE.md). You are free to use this project in any way you wish. Commits back to this repo with fixes and improvements are welcome. The author of the project grants no warranties and accepts no liablity for anything that might result from the use of this software. 
+This project is licensed under the [MIT](LICENSE.md). You are free to use this project in any way you wish. Commits back to this repo with fixes and improvements are welcome. The author of the project grants no warranties and accepts no liablity for anything that might result from the use of this software. 
