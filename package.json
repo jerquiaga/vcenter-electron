@@ -16,11 +16,11 @@
   "author": "Josh Erquiaga",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^11.2.1",
+    "electron": "^11.3.0",
     "electron-builder": "^22.9.1"
   },
   "dependencies": {
-    "ajv": "^6.12.6",
+    "ajv": "^7.1.1",
     "electron-settings": "^3.2.0",
     "electron-window-state": "^5.0.3",
     "sudo-prompt": "^9.2.1"
