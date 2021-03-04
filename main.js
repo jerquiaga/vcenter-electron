@@ -73,6 +73,7 @@ function createWindow () {
                       nodeIntegration: true,
                       webviewTag: true,
                       enableRemoteModule: true,
+                      contextIsolation: false,
                     }, 
                     'x': mainWindowState.x,
                     'y': mainWindowState.y,
