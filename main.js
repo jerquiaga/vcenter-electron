@@ -24,36 +24,15 @@ function createWindow () {
   // Load the previous state with fallback to defaults
   let mainWindowState = windowStateKeeper({
     defaultWidth: 1280,
-    defaultHeight: 800
+    defaultHeight: 1024
   });
 
   // Settings are stored at %APPDATA%\vcenter-electron\Settings
   // Check to see if the user has stored settings. If not, initialize
   // settings with the defaults for the organization.
   if (settings.has('server.URL') === false) {
-    settings.set('server', { URL: 'file://' + __dirname + '/connect.html',
-                             type: 'esxi'
-                           })
+    settings.set('server', { URL: 'file://' + __dirname + '/connect.html'})
   }
-  if (settings.has('extensions.html5') === false) {
-    settings.set('extensions', { html5: '/ui',
-                                 flash: '/vsphere-client/?csp'
-                               })
-  }
-  if (settings.has('format.preference') === false) {
-    settings.set('format', { preference: 'html5' })
-  }
-
-  // Watch the format preference setting and reload the URL if the user
-  // chooses to change which interface they want to use.
-  settings.watch('format.preference', function handler(newValue) {
-    if (settings.get('server.URL') === 'file://' + __dirname + '/connect.html') {
-      mainWindow.loadURL(settings.get('server.URL'))
-    } else {
-      if (settings.get('server.type') === 'esxi') { mainMenu.setHostMode('esxi') }
-      mainWindow.loadURL('file://' + __dirname + '/loader.html')
-    }
-  })
 
   // Watch the base URL setting and reload the URL if the user
   // chooses to change which interface they want to use.
@@ -61,7 +40,6 @@ function createWindow () {
     if (settings.get('server.URL') === 'file://' + __dirname + '/connect.html') {
       mainWindow.loadURL(settings.get('server.URL'))
     } else {
-      if (settings.get('server.type') === 'esxi') { mainMenu.setHostMode('esxi') }
       mainWindow.loadURL('file://' + __dirname + '/loader.html')
     }
   })
@@ -69,7 +47,6 @@ function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({  
                     webPreferences: {
-                      plugins: true,
                       nodeIntegration: true,
                       webviewTag: true,
                       enableRemoteModule: true,
@@ -92,7 +69,6 @@ function createWindow () {
   if (settings.get('server.URL') === 'file://' + __dirname + '/connect.html') {
     mainWindow.loadURL(settings.get('server.URL'))
   } else {
-    if (settings.get('server.type') === 'esxi') { mainMenu.setHostMode('esxi') }
     mainWindow.loadURL('file://' + __dirname + '/loader.html')
   }
 
@@ -110,27 +86,35 @@ function createWindow () {
   
 }
 
-// Load the Flash plugin for Flash mode.
-pepperPath = __dirname.replace('\\resources\\app.asar','') + '\\resources\\plugin\\pepflashplayer.dll'
-app.commandLine.appendSwitch('ppapi-flash-path', pepperPath)
 // Ignore certificate errors because VMware uses self-signed certs.
 app.commandLine.appendSwitch('ignore-certificate-errors')
-// Disable caching
-app.commandLine.appendSwitch('disable-http-cache')
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
 
-// Allow server updates from connect.html renderer process.
-ipcMain.on('server-update', (event, arg1, arg2, arg3) => {
-  //console.log("Received new server and format, " + arg1 + ", " + arg2)
-  settings.set('server', { URL: arg1, type: arg3 })
-  settings.set('format', { preference: arg2 })
+// Quit when all windows are closed.
+app.on('window-all-closed', function () {
+  // On OS X it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
 
-  mainMenu.changeMenu(arg2)
-  if (arg3 === 'esxi' || arg3 === 'vcenter') { mainMenu.setHostMode(arg3) }
+app.on('activate', function () {
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (mainWindow === null) {
+    createWindow()
+  }
+})
+
+// Allow server updates from connect.html renderer process.
+ipcMain.on('server-update', (event, arg1) => {
+  console.log("Received new server, " + arg1)
+  settings.set('server', { URL: arg1})
 })
 
 // Allow start service messages from loader.html renderer process.

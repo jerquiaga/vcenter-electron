@@ -4,7 +4,6 @@
     <script>
         const settings = require('electron-settings')
         const {ipcRenderer} = require('electron')
-        const remote = require('electron').remote
         const shell = require('electron').shell
 
         let fullURL
@@ -13,32 +12,24 @@
         let serviceDownHTML
         let updateAvailableHTML
         let updateAvailable = false
+        let updateProgress = false
+        let updateComplete = false
+        let updateProgressMessage
 
         // Inital page variables
-        if (settings.get('server.type') === 'view') {
-            fullURL = "https:\/\/" + settings.get('server.URL') + "/admin/"
-            badgeHTML = "<img src=\"./assets/icons/flash/Flash_Badge_12.png\">"
-        } else if (settings.get('server.type') === 'appv') {
-            fullURL = "https:\/\/" + settings.get('server.URL') + "/login/"
-            badgeHTML = "<img src=\"./assets/icons/html5/HTML5_Badge_12.png\">"
-        } else if (settings.get('format.preference') === 'html5') {
-            fullURL = "https:\/\/" + settings.get('server.URL') + settings.get('extensions.html5')
-            badgeHTML = "<img src=\"./assets/icons/html5/HTML5_Badge_12.png\">"
-        } else if (settings.get('format.preference') === 'flash') {
-            fullURL = "https:\/\/" + settings.get('server.URL') + settings.get('extensions.flash')
-            badgeHTML = "<img src=\"./assets/icons/flash/Flash_Badge_12.png\">"
-        } else {
-            fullURL = "https:\/\/" + settings.get('server.URL')
-            badgeHTML = ""
-        }
+        fullURL = "https:\/\/" + settings.get('server.URL') + "/ui"
+        badgeHTML = "<img src=\"./assets/icons/html5/HTML5_Badge_12.png\">"
 
         serviceDownHTML = "<td><font color=\"red\">VMWare Cip Message Proxy Service is Stopped. <button class=\"button\" onclick=\"startCIPMessageProxy()\">Start Service</button></font></td>"
-        updateAvailableHTML = "<td><font color=\"yellow\">Update available. <button class=\"button\" onclick=\"startUpdate()\">Install Update</button></font></td>"
+        updateAvailableHTML = "<td><button class=\"button\" onclick=\"startUpdate()\">Download Update</button></font></td>"
+        finishUpdateHTML = "<td><button class=\"button\" onclick=\"finishUpdate()\">Install Update</button></td>"
 
         // Allows Main process functions to update status bar
         ipcRenderer.on('updateinfo', (event, message) => {
             console.log(message)
             if (message === "Update available") { updateAvailable = true }
+            if (message === "Download Complete") { updateProgress = false; updateComplete = true }
+            if (message.includes("Downloading")) { updateAvailable = false; updateProgress = true; updateProgressMessage = message }
             updateSettingDisplayHTML()
         })
 
@@ -47,6 +38,8 @@
             settingDisplayHTML = "<table class=\"status\"><tr>"
             if (serviceStatus() == false) { settingDisplayHTML = settingDisplayHTML + serviceDownHTML }
             if (updateAvailable) { settingDisplayHTML = settingDisplayHTML + updateAvailableHTML }
+            if (updateProgress) { settingDisplayHTML = settingDisplayHTML + "<td><font color=\"yellow\">" + updateProgressMessage + "</font></td>" }
+            if (updateComplete) { settingDisplayHTML = settingDisplayHTML + finishUpdateHTML }
             settingDisplayHTML = settingDisplayHTML + "<td width=\"100%\"></td><td>Currently connected to: " + settings.get('server.URL') + "</td><td></td><td>" + badgeHTML + "</td></tr></table>"
             document.getElementById("settingdisplay").innerHTML = settingDisplayHTML
         }
@@ -71,9 +64,15 @@
             }
         }
 
-        // Send a request to Main process to start update
+        // Send a request to Main process to download update
         function startUpdate() {
             ipcRenderer.send('start-update')
+            updateAvailable = false
+        }
+
+        // Send a request to Main process to install update
+        function finishUpdate() {
+            ipcRenderer.send('install-update')
         }
 
         // Load the page
@@ -81,7 +80,7 @@
             // Send request to Main process to check whether updates are available
             ipcRenderer.send('check-update-status')
 
-            document.getElementById("webview").innerHTML = "<webview id=\"host\" src=\"" + fullURL + "\" autosize plugins></webview>"
+            document.getElementById("webview").innerHTML = "<webview id=\"host\" src=\"" + fullURL + "\" autosize></webview>"
             updateSettingDisplayHTML()
             
             var webview = document.getElementById('host')

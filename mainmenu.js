@@ -1,34 +1,12 @@
 // Builds the menu for the application
 const {Menu} = require('electron')
 const electron = require('electron')
-const app = electron.app
 const settings = require('electron-settings')
 
 const template = [
   {
     label: 'File',
     submenu: [
-        {
-            // This option is hidden when using the HTML interface
-            label: 'Switch to HTML5...',
-            click () { settings.set('format', { preference: 'html5' })
-                       menu.items[0].submenu.items[0].visible = false
-                       menu.items[0].submenu.items[1].visible = true
-                       menu.items[0].submenu.items[1].enabled = true
-                     }
-        },
-        {
-            // This option is hidden when using the Flash interface
-            label: 'Switch to Flash...',
-            click () { settings.set('format', { preference: 'flash' })
-                       menu.items[0].submenu.items[0].visible = true
-                       menu.items[0].submenu.items[1].visible = false
-                       menu.items[0].submenu.items[0].enabled = true
-                     }
-        },
-        {
-            type: 'separator'
-        },
         /* BEGIN CUSTOM MENU
         {
             label: 'vCenters',
@@ -125,12 +103,7 @@ const template = [
         END CUSTOM MENU */ 
         {
             label: 'Connect to server...',
-            click() { settings.set('server', { URL: 'file://' + __dirname + '/connect.html', type: 'esxi' })
-                      settings.set('format', { preference: 'html5'} )
-                      menu.items[0].submenu.items[1].enabled = false
-                      menu.items[0].submenu.items[0].visible = false
-                      menu.items[0].submenu.items[1].visible = true
-            }
+            click() { settings.set('server', { URL: 'file://' + __dirname + '/connect.html'})}
         },
         {
             type: 'separator'
@@ -185,7 +158,7 @@ const template = [
       },
       {
         label: 'Toggle Developer Tools',
-        accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+        accelerator: 'Ctrl+Shift+I',
         click (item, focusedWindow) {
           if (focusedWindow) focusedWindow.webContents.toggleDevTools()
         }
@@ -251,55 +224,4 @@ const template = [
 ]
 
 const menu = Menu.buildFromTemplate(template)
-
-// Used in initial menu build to hide the switch option that is in use.
-if (settings.get('format.preference') === 'html5') {
-  menu.items[0].submenu.items[0].visible = false
-  if (settings.get('server.type') === 'vcenter' || settings.get('server.type') === 'appv') {
-    menu.items[0].submenu.items[1].enabled = false
-  }
-} else if (settings.get('format.preference') === 'flash') {
-  menu.items[0].submenu.items[1].visible = false
-  if (settings.get('server.type') === 'view') { menu.items[0].submenu.items[0].enabled = false }
-}
-
-// Set vCenter options
-function vcenterMode() {
-  menu.items[0].submenu.items[1].enabled = true
-}
-
-// Turns off switch to Flash for hosts
-function hostMode() {
-  settings.set('format', { preference: 'html5'} )
-  menu.items[0].submenu.items[1].enabled = false
-  menu.items[0].submenu.items[0].visible = false
-  menu.items[0].submenu.items[1].visible = true
-}
-
-// Turns off switch to HTML5 for view servers
-function viewMode() {
-  settings.set('format', { preference: 'flash'} )
-  menu.items[0].submenu.items[0].enabled = false
-  menu.items[0].submenu.items[1].visible = false
-  menu.items[0].submenu.items[0].visible = true
-}
-
-// Function to allow main.js to turn on either the switch to HTML5 or
-// switch to Flash option, used when a user connects to a host.
-exports.changeMenu = arg => {
-  if (arg === 'html5') {
-      menu.items[0].submenu.items[0].visible = false
-      menu.items[0].submenu.items[1].visible = true
-      menu.items[0].submenu.items[1].enabled = true
-  } else if (arg === 'flash') {
-      menu.items[0].submenu.items[0].visible = true
-      menu.items[0].submenu.items[1].visible = false
-      menu.items[0].submenu.items[0].enabled = true
-  } else { console.log("Invalid menu change specification") }
-}
-
-exports.setHostMode = arg => {
-  hostMode()
-}
-
 Menu.setApplicationMenu(menu)
