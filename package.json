@@ -29,8 +29,8 @@
   },
   "scripts": {
     "start": "electron .",
-    "pack": "node_modules/.bin/electron-builder --dir",
-    "build": "node_modules/.bin/electron-builder --win"
+    "pack": "electron-builder --dir",
+    "build": "electron-builder --win"
   },
   "build": {
     "appId": "com.custom.vcenter",
