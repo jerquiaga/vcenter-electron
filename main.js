@@ -7,13 +7,16 @@ const BrowserWindow = electron.BrowserWindow
 // Module to manage file system paths
 const path = require('path')
 // Module to persist user settings
-const settings = require('electron-settings')
+const Store = require('electron-store')
 // Module to persist window state
 const windowStateKeeper = require('electron-window-state')
 // Module to send information between pages and main process
 const ipcMain = require('electron').ipcMain
 // Require the custom menu
 const mainMenu = require('./mainmenu.js')
+
+// Initialize settings store
+const store = new Store({ watch: true })
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -30,15 +33,15 @@ function createWindow () {
   // Settings are stored at %APPDATA%\vcenter-electron\Settings
   // Check to see if the user has stored settings. If not, initialize
   // settings with the defaults for the organization.
-  if (settings.has('server.URL') === false) {
-    settings.set('server', { URL: 'file://' + __dirname + '/connect.html'})
+  if (store.has('server.URL') === false) {
+    store.set('server', { URL: 'file://' + __dirname + '/connect.html'})
   }
 
   // Watch the base URL setting and reload the URL if the user
   // chooses to change which interface they want to use.
-  settings.watch('server.URL', function handler(newValue) {
-    if (settings.get('server.URL') === 'file://' + __dirname + '/connect.html') {
-      mainWindow.loadURL(settings.get('server.URL'))
+  store.onDidChange('server.URL', function (newValue, oldValue) {
+    if (store.get('server.URL') === 'file://' + __dirname + '/connect.html') {
+      mainWindow.loadURL(store.get('server.URL'))
     } else {
       mainWindow.loadURL('file://' + __dirname + '/loader.html')
     }
@@ -49,7 +52,6 @@ function createWindow () {
                     webPreferences: {
                       nodeIntegration: true,
                       webviewTag: true,
-                      enableRemoteModule: true,
                       contextIsolation: false,
                     }, 
                     'x': mainWindowState.x,
@@ -66,8 +68,8 @@ function createWindow () {
   mainWindowState.manage(mainWindow);
 
   // Load the page.
-  if (settings.get('server.URL') === 'file://' + __dirname + '/connect.html') {
-    mainWindow.loadURL(settings.get('server.URL'))
+  if (store.get('server.URL') === 'file://' + __dirname + '/connect.html') {
+    mainWindow.loadURL(store.get('server.URL'))
   } else {
     mainWindow.loadURL('file://' + __dirname + '/loader.html')
   }
@@ -113,8 +115,8 @@ app.on('activate', function () {
 
 // Allow server updates from connect.html renderer process.
 ipcMain.on('server-update', (event, arg1) => {
-  console.log("Received new server, " + arg1)
-  settings.set('server', { URL: arg1})
+  //console.log("Received new server, " + arg1)
+  store.set('server', { URL: arg1})
 })
 
 // Allow start service messages from loader.html renderer process.

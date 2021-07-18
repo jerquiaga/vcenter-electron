@@ -1,7 +1,8 @@
 // Builds the menu for the application
 const {Menu} = require('electron')
 const electron = require('electron')
-const settings = require('electron-settings')
+const Store = require('electron-store');
+const store = new Store({ watch: true });
 
 const template = [
   {
@@ -13,17 +14,11 @@ const template = [
             submenu: [
               {
                 label: 'vCenter 1',
-                click() { settings.set('server', { URL: 'vcenter1.example.com', type: 'vcenter' })
-                          menu.items[0].submenu.items[0].enabled = true
-                          menu.items[0].submenu.items[1].enabled = true
-                        }
+                click() { store.set('server', { URL: 'vcenter1.example.com'})}
               },
               {
                 label: 'vCenter 2',
-                click() { settings.set('server', { URL: 'vcenter2.example.com', type: 'vcenter' })
-                          menu.items[0].submenu.items[0].enabled = true
-                          menu.items[0].submenu.items[1].enabled = true
-                        }
+                click() { store.set('server', { URL: 'vcenter2.example.com'})}
               }
             ]
         },
@@ -35,17 +30,11 @@ const template = [
                 submenu: [
                   {
                     label: 'host1',
-                    click() { settings.set('server', { URL: 'host1.example.com', type: 'esxi' })
-                              settings.set('format', { preference: 'html5'} )
-                              hostMode()
-                            }
+                    click() { store.set('server', { URL: 'host1.example.com'})}
                   },
                   {
                     label: 'host2',
-                    click() { settings.set('server', { URL: 'host2.example.com', type: 'esxi' })
-                              settings.set('format', { preference: 'html5'} )
-                              hostMode()
-                            }
+                    click() { store.set('server', { URL: 'host2.example.com'})}
                   }
                 ]
               },
@@ -54,26 +43,17 @@ const template = [
                 submenu: [
                   {
                     label: 'host3',
-                    click() { settings.set('server', { URL: 'host3.example.com', type: 'esxi' })
-                              settings.set('format', { preference: 'html5'} )
-                              hostMode()
-                            }
+                    click() { store.set('server', { URL: 'host3.example.com'})}
                   },
                   {
                     label: 'host4',
-                    click() { settings.set('server', { URL: 'host4.example.com', type: 'esxi' })
-                              settings.set('format', { preference: 'html5'} )
-                              hostMode()
-                            }
+                    click() { store.set('server', { URL: 'host4.example.com'})}
                   }
                 ]
               },
               {
                 label: 'host5',
-                click() { settings.set('server', { URL: 'host5.example.com', type: 'esxi' })
-                          settings.set('format', { preference: 'html5'} )
-                          hostMode()
-                        }
+                click() { store.set('server', { URL: 'host5.example.com'})}
               }
             ]
         },
@@ -82,28 +62,22 @@ const template = [
           submenu: [
             {
               label: 'View Connection 1',
-              click() { settings.set('server', { URL: 'viewconnection1.example.com', type: 'view' })
-                        viewMode()
-                      }
+              click() { store.set('server', { URL: 'viewconnection1.example.com'})}
             },
             {
               label: 'View Connection 2',
-              click() { settings.set('server', { URL: 'viewconnection2.example.com', type: 'view' })
-                        viewMode()
-                      }
+              click() { store.set('server', { URL: 'viewconnection2.example.com'})}
             },
             {
               label: 'App Volume 1',
-              click() { settings.set('server', { URL: 'appvolume1.example.com', type: 'appv' })
-                        hostMode()
-                      }
+              click() { store.set('server', { URL: 'appvolume1.example.com'})}
             }
           ]
         },
         END CUSTOM MENU */ 
         {
             label: 'Connect to server...',
-            click() { settings.set('server', { URL: 'file://' + __dirname + '/connect.html'})}
+            click() { store.set('server', { URL: 'file://' + __dirname + '/connect.html'})}
         },
         {
             type: 'separator'

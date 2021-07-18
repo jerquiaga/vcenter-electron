@@ -2,9 +2,10 @@
 <head>
     <link href="./default.css" rel="stylesheet" />
     <script>
-        const settings = require('electron-settings')
         const {ipcRenderer} = require('electron')
         const shell = require('electron').shell
+        const Store = require('electron-store');
+        const store = new Store({ watch: true });
 
         let fullURL
         let badgeHTML
@@ -17,7 +18,7 @@
         let updateProgressMessage
 
         // Inital page variables
-        fullURL = "https:\/\/" + settings.get('server.URL') + "/ui"
+        fullURL = "https:\/\/" + store.get('server.URL') + "/ui"
         badgeHTML = "<img src=\"./assets/icons/html5/HTML5_Badge_12.png\">"
 
         serviceDownHTML = "<td><font color=\"red\">VMWare Cip Message Proxy Service is Stopped. <button class=\"button\" onclick=\"startCIPMessageProxy()\">Start Service</button></font></td>"
@@ -40,7 +41,7 @@
             if (updateAvailable) { settingDisplayHTML = settingDisplayHTML + updateAvailableHTML }
             if (updateProgress) { settingDisplayHTML = settingDisplayHTML + "<td><font color=\"yellow\">" + updateProgressMessage + "</font></td>" }
             if (updateComplete) { settingDisplayHTML = settingDisplayHTML + finishUpdateHTML }
-            settingDisplayHTML = settingDisplayHTML + "<td width=\"100%\"></td><td>Currently connected to: " + settings.get('server.URL') + "</td><td></td><td>" + badgeHTML + "</td></tr></table>"
+            settingDisplayHTML = settingDisplayHTML + "<td width=\"100%\"></td><td>Currently connected to: " + store.get('server.URL') + "</td><td></td><td>" + badgeHTML + "</td></tr></table>"
             document.getElementById("settingdisplay").innerHTML = settingDisplayHTML
         }
 
