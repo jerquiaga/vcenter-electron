@@ -12,15 +12,11 @@ If you would like a quick select list of all of your vCenters and ESXi hosts, ma
 
 To run the application to test any changes you make to the menu structure, run `npm start` in the repo directory.
 
-To build an executable, run one of the following commands depending on the OS you are building for. Executables will be created in the `dist` directory under the repo root. This directory is specified in the `.gitignore` file so that packaged builds won't be commited to the repo.
-
-| OS | Command |
-|---|---|
-|Windows|`npm run build`|
+To build an executable, run `npm run build`. Executables will be created in the `dist` directory under the repo root. This directory is specified in the `.gitignore` file so that packaged builds won't be commited to the repo.
 
 Please note that the Windows packager creates a 64-bit executable and won't run on Windows 32-bit.
 
-If you are using Active Directory Integration with your vSphere environment, you'll want to make sure that you install the Enhanced Authentication Plugin from VMware. If Windows Session Authentication already works for you on the vSphere web clients, you most likely already have this installed.
+If you are using Active Directory Integration with your vSphere environment, you'll want to make sure that you install the [Enhanced Authentication Plugin](https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vcenter.install.doc/GUID-E640124B-BB55-4D29-AADD-296E01CF88C8.html) from VMware. If Windows Session Authentication already works for you on the vSphere web clients, you most likely already have this installed.
 
 ## Contributions
 Code contributions are welcome! If there is something you see that can be fixed/improved, feel free to create pull requests for your changes. 
