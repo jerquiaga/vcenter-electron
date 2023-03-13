@@ -2,7 +2,7 @@
 
 ## Welcome!
 
-In moving to VMware vSphere 6 and 6.5, VMware abandoned their C# thick client and instead provided two web clients. The legacy Adobe Flash client is at feature parity with the C# thick client, while the more modern HTML5 client is still not at feature parity. This leaves admins in the position where they need to switch back and forth between the two clients to perform normal administration duties as well as keep track of the vSphere client in a sea of browser tabs. This project was created to address those shortcomings. Basically, the project is an electron front-end for the vSphere client. It allows for easy switching between the Flash and HTML5 clients, and works like a standalone desktop app.
+In moving to VMware vSphere 6 and 6.5, VMware abandoned their C# thick client and instead a web client. This leaves admins in the position where they need to keep track of the vSphere client in a sea of browser tabs. This project was created to address this shortcoming. Basically, the project is an electron front-end for the vSphere client and works like a standalone desktop app.
 
 ## Building the Project
 
