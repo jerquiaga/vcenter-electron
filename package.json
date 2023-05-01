@@ -1,7 +1,7 @@
 {
   "name": "vcenter-electron",
   "productName": "VMware vCenter Client",
-  "version": "4.3.20",
+  "version": "4.3.21",
   "private": true,
   "description": "VMware vCenter Client - Electron wrapper for vCenter websites.",
   "main": "main.js",
