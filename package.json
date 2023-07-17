@@ -1,7 +1,7 @@
 {
   "name": "vcenter-electron",
   "productName": "VMware vCenter Client",
-  "version": "4.3.27",
+  "version": "4.3.28",
   "private": true,
   "description": "VMware vCenter Client - Electron wrapper for vCenter websites.",
   "main": "main.js",
@@ -16,7 +16,7 @@
   "author": "Josh Erquiaga",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^25.1.1",
+    "electron": "^25.3.0",
     "electron-builder": "^24.4.0"
   },
   "dependencies": {
