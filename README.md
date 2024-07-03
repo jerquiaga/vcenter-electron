@@ -1,3 +1,6 @@
+# NOTICE: THIS PROJECT HAS BEEN DISCONTINUED AND IS NO LONGER BEING MAINTAINED.
+This project is no longer being maintained, and no further updates will be made to it. The project and its code will remain as a historical artifact.
+
 # vcenter-electron
 
 ## Welcome!
